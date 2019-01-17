@@ -36,7 +36,9 @@ args=vars(ap.parse_args())
 img = cv2.imread(args["image"])
 # cv2.imshow("Original Image", img)
 # cv2.waitKey(0)
+
 img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+img = cv2.GaussianBlur(img,(3,3),0)
 img_flatten = img.reshape(-1,3)
 print(img_flatten.shape)
 
@@ -59,11 +61,17 @@ plt.axis("off")
 plt.imshow(bar)
 plt.show()
 
-black_color_index = np.argmin(np.linalg.norm(clst.cluster_centers_, axis=1))
-print(black_color_index)
+# black_color_index = np.argmin(np.linalg.norm(clst.cluster_centers_, axis=1))
+distance = np.linalg.norm(clst.cluster_centers_, axis=1)
+black_color_index_1 = np.where(distance == (np.sort(distance,kind="mergesort",axis=-1)[0]))[0][0]
+black_color_index_2 = np.where(distance == (np.sort(distance,kind="mergesort",axis=-1)[1]))[0][0]
+
+print(distance)
+print(black_color_index_1)
+print(black_color_index_2)
 
 print(len(clst.labels_), img.shape[0]*img.shape[1])
-black_flag = clst.labels_ == black_color_index
+black_flag = np.logical_or(clst.labels_ == black_color_index_1, clst.labels_ == black_color_index_2) 
 black_flag = black_flag.reshape(img.shape[:2])
 img_filtered = np.zeros(black_flag.shape, dtype="uint8")
 img_filtered[black_flag] = 255
