@@ -76,6 +76,8 @@ plt.show()
 gaussian_img = cv2.GaussianBlur(img_filtered,(3,3),3)
 median_img = cv2.medianBlur(img_filtered,3)
 
-cv2.imwrite("/home/raj/Desktop/filteredimage1.jpg",255-img_filtered)
-cv2.imwrite("/home/raj/Desktop/filtered_medianblur_3_image1.jpg",255-median_img)
-cv2.imwrite("/home/raj/Desktop/filtered_gaussianblur_3_image1.jpg",255-gaussian_img)
+documentfolder = args['image'].split(".jpg")[0]
+# print(documentfolder)
+cv2.imwrite(documentfolder+"_original_RGB.jpg",255-img_filtered)
+cv2.imwrite(documentfolder+"_medianblur_RGB.jpg",255-median_img)
+cv2.imwrite(documentfolder+"_gaussianblur_RGB.jpg",255-gaussian_img)
