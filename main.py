@@ -21,6 +21,9 @@ def plot_colors(hist, centroids):
     startx=0
 
     for(percent, color) in zip(hist, centroids):
+        color = color.reshape(1,1,3).astype("uint8")
+        color = cv2.cvtColor(color,cv2.COLOR_HSV2RGB).reshape(3)
+        print("New Color", color)
         endx = startx+percent*300
         cv2.rectangle(bar,(int(startx),0), (int(endx),50),
         color.astype("uint8").tolist(), -1)
@@ -37,7 +40,8 @@ img = cv2.imread(args["image"])
 # cv2.imshow("Original Image", img)
 # cv2.waitKey(0)
 img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-img_flatten = img.reshape(-1,3)
+img_hsv = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
+img_flatten = img_hsv.reshape(-1,3)
 print(img_flatten.shape)
 
 
@@ -58,8 +62,10 @@ plt.figure("Clustered colors")
 plt.axis("off")
 plt.imshow(bar)
 plt.show()
+print(clst.cluster_centers_.shape)
+print(clst.cluster_centers_)
 
-black_color_index = np.argmin(np.linalg.norm(clst.cluster_centers_, axis=1))
+black_color_index = np.argmin(clst.cluster_centers_[:,2])
 print(black_color_index)
 
 print(len(clst.labels_), img.shape[0]*img.shape[1])
@@ -76,6 +82,10 @@ plt.show()
 gaussian_img = cv2.GaussianBlur(img_filtered,(3,3),3)
 median_img = cv2.medianBlur(img_filtered,3)
 
-cv2.imwrite("/home/raj/Desktop/filteredimage1.jpg",255-img_filtered)
-cv2.imwrite("/home/raj/Desktop/filtered_medianblur_3_image1.jpg",255-median_img)
-cv2.imwrite("/home/raj/Desktop/filtered_gaussianblur_3_image1.jpg",255-gaussian_img)
+
+documentfolder = args['image'].split(".jpg")[0]
+# print(documentfolder)
+cv2.imwrite(documentfolder+"_original_HSV.jpg",255-img_filtered)
+cv2.imwrite(documentfolder+"_medianblur_HSV.jpg",255-median_img)
+cv2.imwrite(documentfolder+"_gaussianblur_HSV.jpg",255-gaussian_img)
+
