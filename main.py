@@ -65,10 +65,17 @@ print(black_color_index)
 print(len(clst.labels_), img.shape[0]*img.shape[1])
 black_flag = clst.labels_ == black_color_index
 black_flag = black_flag.reshape(img.shape[:2])
-img_filtered = np.zeros(img.shape[:2])
+img_filtered = np.zeros(black_flag.shape, dtype="uint8")
 img_filtered[black_flag] = 255
 
 plt.figure("Black colored pixels")
 plt.axis("off")
 plt.imshow(img_filtered, cmap="gray")
 plt.show()
+
+gaussian_img = cv2.GaussianBlur(img_filtered,(3,3),3)
+median_img = cv2.medianBlur(img_filtered,3)
+
+cv2.imwrite("/home/raj/Desktop/filteredimage1.jpg",255-img_filtered)
+cv2.imwrite("/home/raj/Desktop/filtered_medianblur_3_image1.jpg",255-median_img)
+cv2.imwrite("/home/raj/Desktop/filtered_gaussianblur_3_image1.jpg",255-gaussian_img)
