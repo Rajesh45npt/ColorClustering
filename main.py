@@ -62,16 +62,26 @@ plt.imshow(bar)
 plt.show()
 
 # black_color_index = np.argmin(np.linalg.norm(clst.cluster_centers_, axis=1))
-distance = np.linalg.norm(clst.cluster_centers_, axis=1)
-black_color_index_1 = np.where(distance == (np.sort(distance,kind="mergesort",axis=-1)[0]))[0][0]
-black_color_index_2 = np.where(distance == (np.sort(distance,kind="mergesort",axis=-1)[1]))[0][0]
+# distance = np.linalg.norm(clst.cluster_centers_, axis=1)
+# black_color_index_1 = np.where(distance == (np.sort(distance,kind="mergesort",axis=-1)[0]))[0][0]
+# black_color_index_2 = np.where(distance == (np.sort(distance,kind="mergesort",axis=-1)[1]))[0][0]
 
-print(distance)
-print(black_color_index_1)
-print(black_color_index_2)
+# print(distance)
+# print(black_color_index_1)
+# print(black_color_index_2)
 
-print(len(clst.labels_), img.shape[0]*img.shape[1])
-black_flag = np.logical_or(clst.labels_ == black_color_index_1, clst.labels_ == black_color_index_2) 
+# print(len(clst.labels_), img.shape[0]*img.shape[1])
+
+black_flag = clst.labels_ == np.nan
+print(black_flag)
+print(black_flag.shape)
+for index in range(len(clst.cluster_centers_)):
+    print(clst.cluster_centers_[index])
+    if clst.cluster_centers_[index][0] > 125 or clst.cluster_centers_[index][1] > 125 or clst.cluster_centers_[index][2]>125:
+        print("Skipped")
+        continue
+    black_flag = np.logical_or(black_flag, clst.labels_==index)
+    print("Added")
 black_flag = black_flag.reshape(img.shape[:2])
 img_filtered = np.zeros(black_flag.shape, dtype="uint8")
 img_filtered[black_flag] = 255
